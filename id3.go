@@ -55,6 +55,13 @@ type File struct {
 // input didn't contain ID3 information.
 func Read(reader io.Reader) *File {
 	file := new(File)
+
+	defer func() {
+		if err := recover(); err != nil {
+			file = nil
+		}
+	}()
+
 	bufReader := bufio.NewReader(reader)
 	if !isID3Tag(bufReader) {
 		return nil
